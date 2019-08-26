@@ -6,7 +6,7 @@
 
 local tapCount = 0
 
-local background = display.newImageRect( "background.png", 360, 570 )
+local background = display.newImageRect( "background.png", 570, 360 )
 background.x = display.contentCenterX
 background.y = display.contentCenterY
 
@@ -26,7 +26,7 @@ local physics = require( "physics" )
 physics.start()
 
 physics.addBody( platform, "static" )
-physics.addBody( balloon, "dynamic", { radius=50, bounce=1 } )
+physics.addBody( balloon, "dynamic", { radius=50, bounce=0.5 } )
 
 local function pushBalloon()
 	balloon:applyLinearImpulse( 0, -0.75, balloon.x, balloon.y )
