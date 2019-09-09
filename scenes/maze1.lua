@@ -42,42 +42,48 @@ function scene:create( event )
 
     map.x,map.y = display.contentCenterX - map.designedWidth/2, display.contentCenterY - map.designedHeight/2
 
-    myRectangle = display.newRect( 0, 0, 10, 10 )
+    myRectangle = display.newRect( 0, 0, 15, 15 )
     myRectangle:setFillColor( 0.5 )
-    myRectangle.x = 134
-    myRectangle.y = 106
+    myRectangle.x = 30
+    myRectangle.y = 110
 
-    physics.start()
-    physics.addBody( map, "static", {density=1.0} )
-    physics.addBody( myRectangle, "dynamic", {density=0.5} )
-    myRectangle.gravityScale = 0.0
+    -- physics.start()
+    -- physics.addBody( map, "static", {density=1.0} )
+    -- physics.addBody( myRectangle, "dynamic", {density=0.5} )
+    -- myRectangle.gravityScale = 0.0
 
     local moveX, moveY = 0, 0
+    local flag = -1
 
     local function touchFunction(event)
         if ( event.phase == "began" or event.phase == "moved" ) then
             -- Code executed when the button is touched
-            print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
+            -- print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
             -- Code executed when the touch is moved over the object
-            print( "touch = " .. moveX .. "," .. moveY )
+            -- print( "touch = " .. moveX .. "," .. moveY )
             stepX = event.x - event.xStart
             stepY = event.y - event.yStart
-            print( "steps = " .. stepX .. "," .. stepY )
-            if (stepX ~= 0 and stepX > 0) then
+            -- print( "steps = " .. stepX .. "," .. stepY )
+            if (stepX ~= 0 and stepX > 0 and flag ~= 0) then
                 moveX = -0.5
-            elseif (stepX ~= 0 and stepX < 0) then
+                flag = 1
+            elseif (stepX ~= 0 and stepX < 0 and flag ~= 0) then
                 moveX = 0.5
+                flag = 1
             end
-            if (stepY ~= 0 and stepY > 0) then
+            if (stepY ~= 0 and stepY > 0 and flag ~= 1) then
                 moveY = -0.5
-            elseif (stepY ~= 0 and stepY < 0) then
+                flag = 0
+            elseif (stepY ~= 0 and stepY < 0 and flag ~= 1) then
                 moveY = 0.5
+                flag = 0
             end
         elseif ( event.phase == "ended" ) then
             -- Code executed when the touch lifts off the object
-            print( "touch ended on object " .. tostring(event.target) )
+            -- print( "touch ended on object " .. tostring(event.target) )
             moveX = 0
             moveY = 0
+            flag = -1
         end
         return true  -- Prevents tap/touch propagation to underlying objects
     end
