@@ -10,12 +10,22 @@ print("View Height:", display.viewableContentHeight)
 print("content CenterX:", display.contentCenterX)
 print("content CenterY:", display.contentCenterY)
 
+local tiled = require "com.ponywolf.ponytiled"
+local physics = require "physics"
+local json = require "json"
+
+
 local w = display.contentWidth
 local h = display.contentHeight
 
-local background = display.newImageRect( "ui/maze1.png", 320, 480 )
+local background = display.newImageRect( "", 320, 480 )
 background.x = display.contentCenterX
 background.y = display.contentCenterY
+
+local mapData = json.decodeFile(system.pathForFile("maps/maze.json", system.ResourceDirectory))  -- load from json export
+local map = tiled.new(mapData, "maps/")
+
+map.x,map.y = display.contentCenterX - map.designedWidth/2, display.contentCenterY - map.designedHeight/2
 
 myRectangle = display.newRect( 0, 0, 39, 39 )
 myRectangle:setFillColor( 0.5 )
