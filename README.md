@@ -7,7 +7,7 @@
 * Labirinto
 
 ## <b>Público alvo</b>
-* <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/DJCTQ_-_L.svg/1024px-DJCTQ_-_L.svg.png" style="width: 30px; height: 30px;">
+* <img src="livre.png">
 
 ## <b>Objetivo Geral</b>
 * O jogo requer uma ação rápida do jogador para navegar pelo labirinto dentro de um limite de tempo.
