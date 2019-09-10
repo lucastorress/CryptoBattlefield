@@ -10,7 +10,8 @@
 * <img src="livre.png">
 
 ## <b>Objetivo Geral</b>
-* O jogo requer uma ação rápida do jogador para navegar pelo labirinto dentro de um limite de tempo.
+* Escapar do labirinto no menor tempo possível.
+
 
 ## <b>Objetivo específico</b>
 * Completar o labirinto antes do tempo acabar.

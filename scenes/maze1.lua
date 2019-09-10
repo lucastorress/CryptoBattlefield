@@ -6,9 +6,6 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
  
- 
- 
- 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -30,6 +27,8 @@ function scene:create( event )
     local physics = require "physics"
     local json = require "json"
 
+    physics.setDrawMode("hybrid")
+
     local w = display.contentWidth
     local h = display.contentHeight
 
@@ -38,7 +37,7 @@ function scene:create( event )
     background.y = display.contentCenterY
 
     local mapData = json.decodeFile(system.pathForFile("maps/maze.json", system.ResourceDirectory))  -- load from json export
-    local map = tiled.new(mapData, "maps/")
+    local map = tiled.new(mapData, "maps")
 
     map.x,map.y = display.contentCenterX - map.designedWidth/2, display.contentCenterY - map.designedHeight/2
 
@@ -47,10 +46,10 @@ function scene:create( event )
     myRectangle.x = 30
     myRectangle.y = 110
 
-    -- physics.start()
-    -- physics.addBody( map, "static", {density=1.0} )
-    -- physics.addBody( myRectangle, "dynamic", {density=0.5} )
-    -- myRectangle.gravityScale = 0.0
+    physics.start()
+    physics.addBody( map, "static", {density=1.0} )
+    physics.addBody( myRectangle, "dynamic", {density=0.5} )
+    myRectangle.gravityScale = 0.0
 
     local moveX, moveY = 0, 0
     local flag = -1
