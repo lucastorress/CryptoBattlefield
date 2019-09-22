@@ -1,21 +1,11 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 
-local tiled = require "com.ponywolf.ponytiled"
-local json = require "json"
-
-local physics = require "physics"
-
-local mazeCreator = require ("scenes.mazeCreator")
-
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-
-physics.start()
-physics.setDrawMode("hybrid")
-
+ 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -25,56 +15,39 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
-    
-    mazeCreator.mazeCreatorBase()
+
+    print("Pixel Width:", display.pixelWidth)
+    print("Pixel Height:", display.pixelHeight)
+    print("View Width:", display.viewableContentWidth)
+    print("View Height:", display.viewableContentHeight)
+    print("content CenterX:", display.contentCenterX)
+    print("content CenterY:", display.contentCenterY)
+
+    local tiled = require "com.ponywolf.ponytiled"
+    local physics = require "physics"
+    local json = require "json"
+
+    physics.setDrawMode("hybrid")
 
     local w = display.contentWidth
     local h = display.contentHeight
 
-    local background = display.newImageRect( "ui/background_map.png", 400, 400 )
+    local background = display.newImageRect( "ui/background.png", 320, 480 )
     background.x = display.contentCenterX
     background.y = display.contentCenterY
 
-    local mapData = json.decodeFile(system.pathForFile("maps/maze.json", system.ResourceDirectory))  -- load from json export
-    local map = tiled.new(mapData, "maps")
+    -- local mapData = json.decodeFile(system.pathForFile("maps/maze.json", system.ResourceDirectory))  -- load from json export
+    -- local map = tiled.new(mapData, "maps")
 
-    map.x,map.y = display.contentCenterX - map.designedWidth/2, display.contentCenterY - map.designedHeight/2
-
-    local mazeShapeGroup = display.newGroup()
-
-    -- local mazeShapeTop = display.newRect( 160, 95, 300, 10)
-    -- mazeShapeGroup:insert( mazeShapeTop )
-    -- local mazeShapeLeft = display.newRect( 15, 240, 10, 300)
-    -- mazeShapeGroup:insert( mazeShapeLeft )
-    -- local mazeShapeRight = display.newRect( 305, 240, 10, 300)
-    -- mazeShapeGroup:insert( mazeShapeRight )
-    -- local mazeShapeBottom = display.newRect( 150, 385, 260, 10)
-    -- mazeShapeGroup:insert( mazeShapeBottom )
-
-    local mazeShapeTop = display.newImageRect( "ui/maze_base.png", 300, 10 )
-    mazeShapeTop.x = display.contentCenterX
-    mazeShapeTop.y = 95
-    local mazeShapeLeft = display.newImageRect( "ui/maze_base.png", 10, 300 )
-    mazeShapeLeft.x = 15
-    mazeShapeLeft.y = display.contentCenterY
-    local mazeShapeRight = display.newImageRect( "ui/maze_base.png", 10, 300 )
-    mazeShapeRight.x = 305
-    mazeShapeRight.y = display.contentCenterY
-    local mazeShapeBottom = display.newImageRect( "ui/maze_base.png", 300, 10 )
-    mazeShapeBottom.x = display.contentCenterX
-    mazeShapeBottom.y = 385
-    
+    -- map.x,map.y = display.contentCenterX - map.designedWidth/2, display.contentCenterY - map.designedHeight/2
 
     myRectangle = display.newRect( 0, 0, 15, 15 )
     myRectangle:setFillColor( 0.5 )
     myRectangle.x = 30
     myRectangle.y = 110
 
-    
-    physics.addBody( mazeShapeLeft, "static", {density=1.0} )
-    physics.addBody( mazeShapeRight, "static", {density=1.0} )
-    physics.addBody( mazeShapeTop, "static", {density=1.0} )
-    physics.addBody( mazeShapeBottom, "static", {density=1.0} )
+    physics.start()
+    -- physics.addBody( map, "static", {density=1.0} )
     physics.addBody( myRectangle, "dynamic", {density=0.5} )
     myRectangle.gravityScale = 0.0
 
