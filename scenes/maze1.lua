@@ -28,10 +28,10 @@ local maze = {
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	{1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-	{1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-	{1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-	{1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1},
+	{1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+	{1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1},
 	{1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
 	{1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
 	{1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1},
@@ -343,7 +343,7 @@ function scene:create( event )
     local circlePad = display.newCircle(controls.displayGroup,
         controlCenterX, controlCenterY, controlCenterRadius)
     -- Let's make it stand out from the background.
-    circlePad:setFillColor(0.4, 0.5, 0.8, 0.75)
+    circlePad:setFillColor(0.8, 0.8, 0.3, 0.75)
 
     -- Here we create the display objects for the controls and place them on the
     -- screen inside our control circle. Because there's a *lot* of typing in the
@@ -472,9 +472,6 @@ function scene:create( event )
     end
     startButton.displayGroup:addEventListener("touch", startButton.touch)
 
-    -- We need functions to show and hide the start button the game begins. We'll
-    -- write them as methods instead of explicitly naming the start button so
-    -- we can reuse them with the play again button.
     startButton.show = function(button)
         button.displayGroup.isVisible = true
     end
@@ -489,22 +486,9 @@ function scene:create( event )
 
     playAgainButton.displayGroup = display.newGroup()
 
-    playAgainButton.displayObject = display.newCircle(playAgainButton.displayGroup,
-        controlCenterX, controlCenterY, controlCenterRadius)
-
-    -- We'll give the button some color and accent.
-    playAgainButton.displayObject.strokeWidth = 6
-    playAgainButton.displayObject:setStrokeColor(244, 244, 64)
-
-    -- Write what the button does.
-    playAgainButton.text = display.newText(playAgainButton.displayGroup, 
-        "Again", controlCenterX - controlCenterRadius + 20, controlCenterY - 18,
-        native.systemFont, 24)
-    -- Make the text black
-    playAgainButton.text:setTextColor(0, 0, 0)
-
-    -- This function will run whenever you hit the play again button. It will
-    -- hide the button from view and then start the game over.
+    playAgainButton.img = display.newImageRect( playAgainButton.displayGroup, "ui/button_play.png", 500, 80 )
+    playAgainButton.img.x = controlCenterX
+    playAgainButton.img.y = controlCenterY - 18
     playAgainButton.touch = function(event)
         if event.phase == "began" then
             playAgainButton:hide()
@@ -513,19 +497,8 @@ function scene:create( event )
     end
     playAgainButton.displayGroup:addEventListener("touch", playAgainButton.touch)
 
-    -- Since we wrote the `startButton:show` and `startButton:hide` functions in the
-    -- method style, we can recycle it on our play again button.
     playAgainButton.show = startButton.show
     playAgainButton.hide = startButton.hide
-
-    --## The main game function.
-
-    -- This play function is much simpler than our last game because we took most
-    -- of the code out so it only ran once. This means that our game will start
-    -- over many more times without crashing, but it also means less can change
-    -- between restarts. The extra section will show you how to change the maze
-    -- between restarts. When the player finishes, they can still start over
-    -- without closing and restarting the game.
 
     function play()
 
