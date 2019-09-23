@@ -10,26 +10,26 @@
 * <img src="livre.png">
 
 ## <b>Objetivo Geral</b>
-* Escapar do labirinto no menor tempo possível.
+* Escapar do labirinto no menor tempo possível, encontrando o queijo.
 
 
 ## <b>Objetivo específico</b>
-* Completar o labirinto antes do tempo acabar.
+* Completar o labirinto antes do tempo acabar. Para isso, o Mr. Mouse deve achar o queijo o quanto antes.
 
 ## <b>Enredo e Personagens</b>
-* Mr. Square é um singelo quadrado que está em busca de ser o primeiro dos polígonos a se arriscar em cruzar o tão famigerado labirinto. Para isso, ele deverá contar com sua agilidade e destreza para chegar do outro lado no menor tempo possível.
+* Mr. Mouse é um singelo ratinho que está em busca de encontrar o seu queijo na imensidão de uma cozinha, que parece mais um labirinto. Para isso, ele deverá contar com a sua agilidade e destreza para encontrá-lo no menor tempo possível.
 
 ## <b>Personagem Principal</b>
-* Mr. Square
+* Mr. Mouse
 
 ## <b>Inimigos</b>
 * Não se aplica.
 
 ## <b>Interação do jogador</b>
-O jogador irá movimentar o Mr. Square (quadrado) pelo labirinto, através do movimento de "toque e arrasta" na tela, indicando a direção que deve percorrer (cima, baixo, direita, esquerda).
+O jogador irá movimentar o Mr. Mouse (ratinho) pelo labirinto, através do movimento de toque nas setas posicionadas em formato de <i>joystick</i>, indicando a direção que deve percorrer (cima, baixo, direita, esquerda).
 
 ## <b>Controles</b>
-* Touch
+* Touch (Joystick)
 
 ## <b>Regras do jogo com sistema de pontuação</b>
 * A ser definido...
