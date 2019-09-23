@@ -1,10 +1,10 @@
 local f =  {}
 
 function f.mazeCreatorBase(physics)
-    for i = 1,4,1
-    do 
-        print(i)
-    end
+    local mazeShapeTop = display.newImageRect( "ui/maze_base.png", 300, 10 )
+    local background = display.newImageRect( "ui/maze_base.png", 10, 10 )
+    local background = display.newImageRect( "ui/maze_base.png", 300, 10 )
+    local background = display.newImageRect( "ui/maze_base.png", 300, 10 )
 end
 
 return f
