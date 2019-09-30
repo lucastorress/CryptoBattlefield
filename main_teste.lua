@@ -1,15 +1,3 @@
-local composer = require( "composer" )
-local scene = composer.newScene()
-
--- -----------------------------------------------------------------------------------
--- Code outside of the scene event functions below will only be executed ONCE unless
--- the scene is removed entirely (not recycled) via "composer.removeScene()"
--- -----------------------------------------------------------------------------------
-
-local function gotoNextPhase()
-	composer.removeScene( "scenes.maze1" )
-	composer.gotoScene( "scenes.maze2", { time=800, effect="crossFade" } )
-end
 
 local screenWidth = display.contentWidth
 local screenHeight = display.contentHeight
@@ -29,7 +17,7 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 30
+local timeDuration = 5
 
 -- Define a configuração do labirinto
 local maze = {
@@ -48,18 +36,6 @@ maze.rows = table.getn(maze)
 maze.columns = table.getn(maze[1])
 maze.xStart, maze.yStart = 2, 6
 maze.xFinish, maze.yFinish = 10, 1
-
---###### Alternative Maze storage possibilities
-
--- -----------------------------------------------------------------------------------
--- Scene event functions
--- -----------------------------------------------------------------------------------
- 
--- create()
-function scene:create( event )
- 
-    local sceneGroup = self.view
-    -- Code here runs when the scene is first created but has not yet appeared on screen
 
     --### Build the map grid.
 
@@ -479,7 +455,7 @@ function scene:create( event )
     playAgainButton.img.y = controlCenterY - 18
     playAgainButton.touch = function(event)
         if event.phase == "began" then
-            gotoNextPhase()
+            finish()
         end
     end
     playAgainButton.displayGroup:addEventListener("touch", playAgainButton.touch)
@@ -487,13 +463,12 @@ function scene:create( event )
     playAgainButton.show = startButton.show
     playAgainButton.hide = startButton.hide
 
-    function startCountTime(event)
+    local function startCountTime()
         if timeDuration > 0 then
             timeDuration = timeDuration - 1
             print('Time:', timeDuration)
             return timeDuration
         else
-            print('Time:', timeDuration)
             finish()
         end
     end
@@ -532,61 +507,3 @@ function scene:create( event )
 
     -- Play the game!
     play()
-
- 
-end
- 
- 
--- show()
-function scene:show( event )
- 
-    local sceneGroup = self.view
-    local phase = event.phase
- 
-    if ( phase == "will" ) then
-        -- Code here runs when the scene is still off screen (but is about to come on screen)
- 
-    elseif ( phase == "did" ) then
-        -- Code here runs when the scene is entirely on screen
-        print('Entrei aqui')
-        timer.performWithDelay(1000, startCountTime, timeDuration)
- 
-    end
-end
- 
- 
--- hide()
-function scene:hide( event )
- 
-    local sceneGroup = self.view
-    local phase = event.phase
- 
-    if ( phase == "will" ) then
-        -- Code here runs when the scene is on screen (but is about to go off screen)
- 
-    elseif ( phase == "did" ) then
-        -- Code here runs immediately after the scene goes entirely off screen
- 
-    end
-end
- 
- 
--- destroy()
-function scene:destroy( event )
- 
-    local sceneGroup = self.view
-    -- Code here runs prior to the removal of scene's view
- 
-end
- 
- 
--- -----------------------------------------------------------------------------------
--- Scene event function listeners
--- -----------------------------------------------------------------------------------
-scene:addEventListener( "create", scene )
-scene:addEventListener( "show", scene )
-scene:addEventListener( "hide", scene )
-scene:addEventListener( "destroy", scene )
--- -----------------------------------------------------------------------------------
- 
-return scene
