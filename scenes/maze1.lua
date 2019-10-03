@@ -1,6 +1,6 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
-
+composer.recycleOnSceneChange = false
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -11,13 +11,19 @@ local function gotoNextPhase()
 	composer.gotoScene( "scenes.maze2", { time=800, effect="crossFade" } )
 end
 
+local function timeIsOver()
+    print("Tempo acabou.")
+	composer.removeScene( "scenes.maze1" )
+    composer.gotoScene( "scenes.menu", { time=800, effect="crossFade" } )
+end
+
 local screenWidth = display.contentWidth
 local screenHeight = display.contentHeight
 
 -- Load background
-local gridBackground = display.newImageRect( "ui/background1.jpg", screenWidth+500, 1680 ) -- x: 260
+local gridBackground = display.newImageRect( "ui/background_maze.png", 1560, 1595 ) -- x: 260
 gridBackground.x = display.contentCenterX -- 150
-gridBackground.y = display.contentCenterY
+gridBackground.y = display.contentCenterY-50
 
 -- We want to make the main map as big as possible, but we need to
 -- have room for controls on the left side, so we'll portion out one
@@ -29,7 +35,7 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 30
+local timeDuration = 2
 
 -- Define a configuração do labirinto
 local maze = {
@@ -38,18 +44,26 @@ local maze = {
     {1,0,1,0,1,0,1,0,0,0,1},
     {1,0,1,0,1,0,1,1,1,0,1},
     {1,0,1,0,0,0,0,0,0,0,1},
-    {1,1,1,1,1,1,1,1,1,1,1},
-    {1,0,1,0,1,0,1,1,1,0,1},
-    {1,0,1,0,0,0,0,0,0,0,1},
-    {1,0,1,0,0,0,0,0,0,0,1},
+    {1,1,1,0,1,1,1,1,1,0,1},
+    {1,0,0,0,1,0,1,1,1,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
     {1,1,1,1,1,1,1,1,1,1,1},
 }
 maze.rows = table.getn(maze)
 maze.columns = table.getn(maze[1])
 maze.xStart, maze.yStart = 2, 6
 maze.xFinish, maze.yFinish = 10, 1
+maze.xKey, maze.yKey = 5, 9
+maze.hasKey = false
 
---###### Alternative Maze storage possibilities
+print("rows, columns:", maze.rows, maze.columns)
+
+local timeDisplay = display.newGroup()
+local gridDisplayGroup = display.newGroup()
+local controlsDisplayGroup = display.newGroup()
+local startButtonDisplayGroup = display.newGroup()
+local playAgainButtonDisplayGroup = display.newGroup()
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -57,11 +71,23 @@ maze.xFinish, maze.yFinish = 10, 1
  
 -- create()
 function scene:create( event )
- 
+
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
+    sceneGroup:insert(gridBackground)
+    local myRoundedRect = display.newRoundedRect( 0, 0, 300, 100, 12 )
+    myRoundedRect.strokeWidth = 3
+    myRoundedRect:setFillColor( 0.5 )
+    myRoundedRect:setStrokeColor( 0.8, 0, 0 )
+    myRoundedRect.x = display.contentCenterX
+    myRoundedRect.y = 10
+    sceneGroup:insert(myRoundedRect)
 
-    --### Build the map grid.
+    local timeText
+    timeText = display.newText( sceneGroup, "Tempo: " .. timeDuration, display.contentCenterX, 10, native.systemFont, 36 )
+    timeText:setTextColor(1, 1, 1)
+
+    -- ### Build the map grid.
 
     -- Games need a field of play. One type of field is a two-dimensional grid.
     -- It's like taking graph paper and laying it over a section of your screen
@@ -94,7 +120,7 @@ function scene:create( event )
     -- We're going to start our map at the edge of our controller. The last
     -- pixel of our controller area is going to be the first pixel of our map
     -- grid.
-    grid.xStart = display.contentCenterX/10
+    grid.xStart = display.contentCenterX/11
 
     -- Just like we wanted to leave a bit of room along the right edge, we want
     -- to leave some room on top of the screen. I found this to be a good
@@ -104,14 +130,14 @@ function scene:create( event )
     -- Lastly, we want to create a group for all the grid tiles and objects on
     -- our map so we can move them around all at once. This is going to help us
     -- with positioning elements on screen later on.
-    grid.displayGroup = display.newGroup()
+    grid.displayGroup = gridDisplayGroup
 
     -- The map is going to be shown on screen with its (0, 0) being the
     -- (xStart, yStart) of the total screen.
     grid.displayGroup.x = grid.xStart
     grid.displayGroup.y = grid.yStart
 
-    --### Grid functions
+    -- ### Grid functions
 
     -- These functions will be placed on our grid squares. They'll help us find
     -- adjacent squares when we need them.
@@ -211,10 +237,10 @@ function scene:create( event )
             -- a list that begins with 1, where we started at 0, we add 1 to the *x*
             -- and *y* values to get the correct maze square.
             if maze[y + 1][x + 1] == 0 then
-                rect:setFillColor(0, 0, 0)
+                rect:setFillColor(0, 0, 0) -- Cor dos caminhos
             else 
                 grid[y][x].wall = true
-                rect:setFillColor(1, 1, 1, 0.9) -- Cor das paredes
+                rect:setFillColor(0.3, 0.61, 1, 0.95) -- Cor das paredes
             end
 
             -- Now that we've created our display object, we attach it to our
@@ -233,16 +259,54 @@ function scene:create( event )
         -- The end of one column.
     end
 
-    grid[maze.yStart - 1][maze.xStart - 1].start = true
-    grid[maze.yStart - 1][maze.xStart - 1].displayObject:setFillColor(1, 1, 0, 1) -- Cor da célula inicial do jogador
-    grid[maze.yFinish - 1][maze.xFinish - 1].displayObject:setFillColor(1, 0, 0) -- Cor da célula de chegada do jogador
+    grid[maze.yStart - 1][maze.xStart - 1].displayObject:setFillColor(0.92, 0.91, 0.51, 1) -- Cor da célula inicial do jogador
+    grid[maze.yFinish - 1][maze.xFinish - 1].displayObject:setFillColor(0.71, 0, 0.37, 1) -- Cor da célula de chegada do jogador (cadeado/padlock)
+    grid[maze.yKey - 1][maze.xKey - 1].displayObject:setFillColor(0) -- Cor da célula onde fica a chave
     grid[maze.yStart - 1][maze.xStart - 1].start = true
     grid[maze.yFinish - 1][maze.xFinish - 1].finish = true
+    grid[maze.yKey - 1][maze.xKey - 1].keyposition = true
 
     -- Final do jogo
-    local cheese = { image = "ui/cheese.png" }
+    local padlock = {
+        image = "ui/padlock_close.png",
+        image_open = "ui/padlock_open.png"
+    }
 
-    function cheese:finishLine(gridSquare)
+    function padlock:finishLine(gridSquare)
+        if self.displayObject == nil then
+            self.displayObject = display.newImageRect(grid.displayGroup,
+            self.image, grid.squareSize*1, grid.squareSize*1)
+        end
+
+        self.displayObject.x = gridSquare.displayObject.x
+        self.displayObject.y = gridSquare.displayObject.y
+    end
+
+    function padlock:openPadlock(gridSquare)
+        if self.displayObject ~= nil and not maze.hasKey then
+            print("openPadlock", maze.hasKey)
+            maze.hasKey = true
+            self.displayObject = nil
+            self.displayObject = display.newRect(grid.displayGroup,
+            grid.squareSize * (maze.xFinish - 1), grid.squareSize * (maze.yFinish - 1),
+            grid.squareSize, grid.squareSize)
+            self.displayObject:setFillColor(0, 1, 0)
+            self.displayObject = display.newImageRect(grid.displayGroup,
+            self.image_open, grid.squareSize*1, grid.squareSize*1)
+
+            local keyGrid = grid[maze.yKey - 1][maze.xKey - 1]
+            keyGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
+            grid[maze.yKey - 1][maze.xKey - 1] = keyGrid
+        end
+
+        self.displayObject.x = gridSquare.displayObject.x
+        self.displayObject.y = gridSquare.displayObject.y
+    end
+
+    -- Key do jogo
+    local key = { image = "ui/key.png" }
+
+    function key:positionKey(gridSquare)
         if self.displayObject == nil then
             self.displayObject = display.newImageRect(grid.displayGroup,
             self.image, grid.squareSize*1, grid.squareSize*1)
@@ -281,8 +345,10 @@ function scene:create( event )
         self.x = gridSquare.x
         self.y = gridSquare.y
 
-        if self.gridSquare.finish then
+        if self.gridSquare.finish and maze.hasKey then
             finish()
+        elseif self.gridSquare.keyposition then
+            padlock:openPadlock(grid[maze.yFinish - 1][maze.xFinish - 1])
         end
     end
 
@@ -325,7 +391,7 @@ function scene:create( event )
     }
 
     -- Create a display group for the control pad.
-    controls.displayGroup = display.newGroup()
+    controls.displayGroup = controlsDisplayGroup
 
     -- Now create a circle to house our directional pad.
     local circlePad = display.newCircle(controls.displayGroup,
@@ -435,7 +501,7 @@ function scene:create( event )
     -- Create the Start button
 
     local startButton = {}
-    startButton.displayGroup = display.newGroup()
+    startButton.displayGroup = startButtonDisplayGroup
     startButton.displayObject = display.newCircle(startButton.displayGroup,
         controlCenterX, controlCenterY, controlCenterRadius)
 
@@ -472,7 +538,7 @@ function scene:create( event )
 
     local playAgainButton = {}
 
-    playAgainButton.displayGroup = display.newGroup()
+    playAgainButton.displayGroup = playAgainButtonDisplayGroup
 
     playAgainButton.img = display.newImageRect( playAgainButton.displayGroup, "ui/button_play.png", 500, 80 )
     playAgainButton.img.x = controlCenterX
@@ -490,19 +556,20 @@ function scene:create( event )
     function startCountTime(event)
         if timeDuration > 0 then
             timeDuration = timeDuration - 1
-            print('Time:', timeDuration)
-            return timeDuration
+            timeText.text = "Tempo: " .. timeDuration
         else
-            print('Time:', timeDuration)
-            finish()
+            print('Fim do tempo:', timeDuration)
+            -- padlock:openPadlock(grid[maze.yFinish - 1][maze.xFinish - 1])
+            timeIsOver(grid)
         end
     end
 
     function play()
 
         -- The runner starts off in the maze start.
+        padlock:finishLine(grid[maze.yFinish - 1][maze.xFinish - 1])
+        key:positionKey(grid[maze.yKey - 1][maze.xKey - 1])
         runner:enter(grid[maze.yStart - 1][maze.xStart - 1])
-        cheese:finishLine(grid[maze.yFinish - 1][maze.xFinish - 1])
 
         -- The play again button starts out hidden since we haven't started yet!
         playAgainButton:hide()
@@ -545,11 +612,16 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
+        sceneGroup:insert(timeDisplay)
+        sceneGroup:insert(gridDisplayGroup)
+        sceneGroup:insert(controlsDisplayGroup)
+        sceneGroup:insert(startButtonDisplayGroup)
+        sceneGroup:insert(playAgainButtonDisplayGroup)
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
         print('Entrei aqui')
-        timer.performWithDelay(1000, startCountTime, timeDuration)
+        timer.performWithDelay(1000, startCountTime, timeDuration+1)
  
     end
 end
@@ -576,6 +648,7 @@ function scene:destroy( event )
  
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
+    print("destruido")
  
 end
  

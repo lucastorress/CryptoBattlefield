@@ -10,9 +10,9 @@ local screenWidth = display.contentWidth
 local screenHeight = display.contentHeight
 
 -- Load background
-local gridBackground = display.newImageRect( "ui/background1.jpg", screenWidth+500, 1680 ) -- x: 260
+local gridBackground = display.newImageRect( "ui/background_maze.png", 1560, 1595 ) -- x: 260
 gridBackground.x = display.contentCenterX -- 150
-gridBackground.y = display.contentCenterY
+gridBackground.y = display.contentCenterY-50
 
 -- We want to make the main map as big as possible, but we need to
 -- have room for controls on the left side, so we'll portion out one
