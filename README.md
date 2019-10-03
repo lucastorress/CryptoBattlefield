@@ -21,7 +21,7 @@
 
 ## <b>Personagem Principal</b>
 * Mr. Mouse
-</br><img src="ui/mouse.png" style="max-width: 50px">
+</br><img src="ui/mouse.png" style="max-width: 50px; max-height: 50px">
 
 ## <b>Inimigos</b>
 * Não se aplica.
@@ -41,11 +41,7 @@ O jogador irá movimentar o Mr. Mouse (ratinho) pelo labirinto, através do movi
 
 ## <b>Sistema de pontos</b>
 * O jogador começa com 0 pontos.
-* Cada fase terá um período de tempo total específico, de acordo com o seu nível de dificuldade. O cálculo dos pontos do jogador será:
-<b>
-    <i>valorAbsoluto</i>
-    [(Tempo restante/Tempo total)*100]
-</b>
+* Cada fase terá um período de tempo total específico, de acordo com o seu nível de dificuldade. O cálculo dos pontos do jogador será: <b><i>valorAbsoluto</i>[(Tempo restante/Tempo total)*100]</b>
 
 * <b>Exemplo:</b> o tempo total da fase é de 30 segundos; o jogador completa a fase em 19 segundos, restando 11 segundos; o cálculo da pontuação será (11/30)*100, que resulta em 36,6666666667; o valor absoluto é 36. Logo, a pontuação daquela fase será 36 somado aos pontos acumulados na fase anterior.
 
