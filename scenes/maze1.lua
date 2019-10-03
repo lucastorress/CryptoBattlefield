@@ -14,7 +14,7 @@ end
 local function timeIsOver()
     print("Tempo acabou.")
 	composer.removeScene( "scenes.maze1" )
-    composer.gotoScene( "scenes.gameOver", { time=800, effect="flipFadeOutIn" } )
+    composer.gotoScene( "scenes.gameOver", { time=500, effect="flipFadeOutIn" } )
 end
 
 local screenWidth = display.contentWidth
@@ -35,7 +35,7 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 30
+local timeDuration = 2
 
 -- Define a configuração do labirinto
 local maze = {

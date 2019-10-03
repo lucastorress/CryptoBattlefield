@@ -7,13 +7,13 @@ composer.recycleOnSceneChange = true
 -- -----------------------------------------------------------------------------------
 
 local function gotoNextPhase()
-	composer.removeScene( "scenes.maze2" )
-	composer.gotoScene( "scenes.maze3", { time=800, effect="crossFade" } )
+	composer.removeScene( "scenes.maze3" )
+	composer.gotoScene( "scenes.menu", { time=800, effect="crossFade" } )
 end
 
 local function timeIsOver()
     print("Tempo acabou.")
-	composer.removeScene( "scenes.maze2" )
+	composer.removeScene( "scenes.maze3" )
     composer.gotoScene( "scenes.gameOver", { time=500, effect="flipFadeOutIn" } )
 end
 
@@ -35,31 +35,31 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 25
+local timeDuration = 30
 
 -- Define a configuração do labirinto
 local maze = {
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-    {1,0,0,0,0,0,1,0,0,0,1,0,0,0,1},
-    {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
-    {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
-    {1,0,1,0,1,1,1,0,1,0,1,0,1,0,1},
-    {1,0,1,0,0,0,0,0,1,0,1,0,1,0,1},
-    {1,0,1,1,1,1,1,1,1,0,1,0,1,0,1},
-    {1,0,0,0,0,0,1,0,0,0,1,0,1,0,1},
-    {1,1,1,1,1,0,1,1,1,1,1,0,1,0,1},
-    {1,0,0,0,1,0,0,0,1,0,0,0,1,0,1},
-    {1,0,1,0,1,1,1,0,1,0,1,1,1,0,1},
-    {1,0,1,0,0,0,0,0,1,0,0,0,1,0,1},
-    {1,0,1,1,1,1,1,1,1,1,1,0,1,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
+    {1,0,0,0,0,0,0,0,1,0,0,0,0,0,1},
+    {1,0,1,1,1,0,1,0,1,1,1,1,1,0,1},
+    {1,0,0,0,1,0,1,0,0,0,0,0,0,0,1},
+    {1,1,1,1,1,0,1,0,1,1,1,1,1,0,1},
+    {1,0,0,0,0,0,1,0,1,0,0,0,1,0,1},
+    {1,0,1,1,1,1,1,1,1,0,1,0,1,1,1},
+    {1,0,1,0,0,0,1,0,1,0,1,0,0,0,1},
+    {1,0,1,0,1,0,1,0,1,0,1,1,1,0,1},
+    {1,0,0,0,1,0,1,0,1,0,1,0,0,0,1},
+    {1,0,1,1,1,0,1,0,1,0,1,0,1,1,1},
+    {1,0,0,0,1,0,1,0,0,0,1,0,1,0,1},
+    {1,1,1,0,1,0,1,1,1,1,1,0,1,0,1},
+    {1,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 }
 maze.rows = table.getn(maze)
 maze.columns = table.getn(maze[1])
-maze.xStart, maze.yStart = 6, 4
-maze.xFinish, maze.yFinish = 14, 14
-maze.xKey, maze.yKey = 8, 8
+maze.xStart, maze.yStart = 4, 4
+maze.xFinish, maze.yFinish = 8, 8
+maze.xKey, maze.yKey = 2, 14
 maze.hasKey = false
 
 print("rows, columns:", maze.rows, maze.columns)
