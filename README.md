@@ -48,10 +48,11 @@ O jogador irá movimentar o Mr. Mouse (ratinho) pelo labirinto, através do movi
     [(Tempo restante/Tempo total)*100]
 </b>
 <br><br>
-* <b>Exemplo:</b> o tempo total da fase é de 30 segundos; o jogador completa a fase em 19 segundos, restando 11 segundos; o cálculo da pontuação será (11/30)*100, que resulta em 36,6666666667; o valor absoluto é 36. Logo, a pontuação daquela fase será 36 somado aos pontos acumulados na fase anterior.
+* Exemplo: o tempo total da fase é de 30 segundos; o jogador completa a fase em 19 segundos, restando 11 segundos; o cálculo da pontuação será (11/30)*100, que resulta em 36,6666666667; o valor absoluto é 36. Logo, a pontuação daquela fase será 36 somado aos pontos acumulados na fase anterior.
 
 ## <b>Como o jogo acaba</b>
 * O jogo acaba caso o tempo chega a zero.
 * O jogo acaba ao completar todas as fases.
 
+## <b>Diagrama de navegação do jogo</b>
 <img src="FluxDiagramMazeScapeScenes.png">
