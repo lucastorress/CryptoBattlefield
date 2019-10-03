@@ -1,6 +1,6 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
-composer.recycleOnSceneChange = false
+composer.recycleOnSceneChange = true
 -- -----------------------------------------------------------------------------------
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -14,7 +14,7 @@ end
 local function timeIsOver()
     print("Tempo acabou.")
 	composer.removeScene( "scenes.maze1" )
-    composer.gotoScene( "scenes.menu", { time=800, effect="crossFade" } )
+    composer.gotoScene( "scenes.gameOver", { time=800, effect="flipFadeOutIn" } )
 end
 
 local screenWidth = display.contentWidth
@@ -35,26 +35,27 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 2
+local timeDuration = 30
 
 -- Define a configuração do labirinto
 local maze = {
-	{1,1,1,1,1,1,1,1,1,0,1},
+	{1,1,1,1,1,1,1,1,1,1,1},
+    {1,0,0,0,0,0,0,0,0,0,1},
+    {1,0,1,1,1,1,1,1,1,0,1},
+    {1,0,1,0,0,0,1,0,0,0,1},
+    {1,0,1,0,1,1,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,1,0,1,0,1},
     {1,0,0,0,1,0,0,0,1,0,1},
-    {1,0,1,0,1,0,1,0,0,0,1},
-    {1,0,1,0,1,0,1,1,1,0,1},
-    {1,0,1,0,0,0,0,0,0,0,1},
-    {1,1,1,0,1,1,1,1,1,0,1},
-    {1,0,0,0,1,0,1,1,1,0,1},
-    {1,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,1},
     {1,1,1,1,1,1,1,1,1,1,1},
 }
 maze.rows = table.getn(maze)
 maze.columns = table.getn(maze[1])
-maze.xStart, maze.yStart = 2, 6
-maze.xFinish, maze.yFinish = 10, 1
-maze.xKey, maze.yKey = 5, 9
+maze.xStart, maze.yStart = 6, 4
+maze.xFinish, maze.yFinish = 6, 6
+maze.xKey, maze.yKey = 10, 10
 maze.hasKey = false
 
 print("rows, columns:", maze.rows, maze.columns)
@@ -594,7 +595,8 @@ function scene:create( event )
     -- Finish the game by hiding the controls and displaying the play again button.
     function finish()
         controls:hide()
-        playAgainButton:show()
+        -- playAgainButton:show()
+        gotoNextPhase()
     end
 
     -- Play the game!
@@ -621,7 +623,7 @@ function scene:show( event )
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
         print('Entrei aqui')
-        timer.performWithDelay(1000, startCountTime, timeDuration+1)
+        timerIsOver = timer.performWithDelay(1000, startCountTime, timeDuration+1)
  
     end
 end
@@ -648,7 +650,8 @@ function scene:destroy( event )
  
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
-    print("destruido")
+    print("Timer cancel")
+    timer.cancel(timerIsOver)
  
 end
  

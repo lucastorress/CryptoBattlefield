@@ -14,8 +14,8 @@ local screenWidth = display.contentWidth
 local screenHeight = display.contentHeight
 
 local function gotoGame()
-	composer.removeScene( "scenes.menu" )
-	composer.gotoScene( "scenes.maze1", { time=800, effect="crossFade" } )
+	composer.removeScene( "scenes.gameOver" )
+	composer.gotoScene( "scenes.menu", { time=500, effect="fade" } )
 end
 
 -- -----------------------------------------------------------------------------------
@@ -28,20 +28,16 @@ function scene:create( event )
 	local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
     
-    local background = display.newImageRect( sceneGroup, "ui/kitchen_bg.png", screenWidth*1.1, screenHeight*1.1 )
+    local background = display.newImageRect( sceneGroup, "ui/background_gameover.png", screenWidth, screenHeight )
 	background.x = display.contentCenterX
-	background.y = display.contentCenterY-55
+	background.y = display.contentCenterY-50
 
-	local title = display.newImageRect( sceneGroup, "ui/logo2.png", 427*2, 135*2 )
-	title.x = display.contentCenterX
-	title.y = 200
-
-    local playButton = display.newImageRect( sceneGroup, "ui/button_play1.png", 500, 80 )
-    playButton.x = display.contentCenterX
-    playButton.y = 700
+    local playAgainButton = display.newImageRect( sceneGroup, "ui/button_play_again.png", 500, 80 )
+    playAgainButton.x = display.contentCenterX
+    playAgainButton.y = display.contentCenterY+400
 	
 
-	playButton:addEventListener( "tap", gotoGame )
+	playAgainButton:addEventListener( "tap", gotoGame )
 end
 
 
