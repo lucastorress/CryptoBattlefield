@@ -8,7 +8,7 @@ composer.recycleOnSceneChange = true
 
 local function gotoNextPhase()
 	composer.removeScene( "scenes.maze3" )
-	composer.gotoScene( "scenes.menu", { time=800, effect="crossFade" } )
+	composer.gotoScene( "scenes.maze4", { time=800, effect="crossFade" } )
 end
 
 local function timeIsOver()
@@ -35,7 +35,7 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 30
+local timeDuration = 40
 
 -- Define a configuração do labirinto
 local maze = {

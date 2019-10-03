@@ -59,8 +59,10 @@ maze.rows = table.getn(maze)
 maze.columns = table.getn(maze[1])
 maze.xStart, maze.yStart = 4, 4
 maze.xFinish, maze.yFinish = 8, 8
-maze.xKey, maze.yKey = 2, 14
-maze.hasKey = false
+maze.xFork, maze.yFork = 2, 14
+maze.xKnife, maze.yKnife = 4, 13
+maze.hasFork = false
+maze.hasKnife = false
 
 print("rows, columns:", maze.rows, maze.columns)
 
@@ -265,19 +267,20 @@ function scene:create( event )
     end
 
     grid[maze.yStart - 1][maze.xStart - 1].displayObject:setFillColor(0.92, 0.91, 0.51, 1) -- Cor da célula inicial do jogador
-    grid[maze.yFinish - 1][maze.xFinish - 1].displayObject:setFillColor(0.71, 0, 0.37, 1) -- Cor da célula de chegada do jogador (cadeado/padlock)
-    grid[maze.yKey - 1][maze.xKey - 1].displayObject:setFillColor(0) -- Cor da célula onde fica a chave
+    grid[maze.yFinish - 1][maze.xFinish - 1].displayObject:setFillColor(0.71, 0, 0.37, 1) -- Cor da célula de chegada do jogador (cheese)
+    grid[maze.yFork - 1][maze.xFork - 1].displayObject:setFillColor(0) -- Cor da célula onde fica a fork
+    grid[maze.yKnife - 1][maze.xKnife - 1].displayObject:setFillColor(0) -- Cor da célula onde fica a knife
     grid[maze.yStart - 1][maze.xStart - 1].start = true
     grid[maze.yFinish - 1][maze.xFinish - 1].finish = true
-    grid[maze.yKey - 1][maze.xKey - 1].keyposition = true
+    grid[maze.yFork - 1][maze.xFork - 1].forkposition = true
+    grid[maze.yKnife - 1][maze.xKnife - 1].knifeposition = true
 
     -- Final do jogo
-    local padlock = {
-        image = "ui/padlock_close.png",
-        image_open = "ui/padlock_open.png"
+    local cheese = {
+        image = "ui/cheese.png"
     }
 
-    function padlock:finishLine(gridSquare)
+    function cheese:finishLine(gridSquare)
         if self.displayObject == nil then
             self.displayObject = display.newImageRect(grid.displayGroup,
             self.image, grid.squareSize*1, grid.squareSize*1)
@@ -287,31 +290,10 @@ function scene:create( event )
         self.displayObject.y = gridSquare.displayObject.y
     end
 
-    function padlock:openPadlock(gridSquare)
-        if self.displayObject ~= nil and not maze.hasKey then
-            print("openPadlock", maze.hasKey)
-            maze.hasKey = true
-            self.displayObject = nil
-            self.displayObject = display.newRect(grid.displayGroup,
-            grid.squareSize * (maze.xFinish - 1), grid.squareSize * (maze.yFinish - 1),
-            grid.squareSize, grid.squareSize)
-            self.displayObject:setFillColor(0, 1, 0)
-            self.displayObject = display.newImageRect(grid.displayGroup,
-            self.image_open, grid.squareSize*1, grid.squareSize*1)
+    -- Fork do jogo
+    local fork = { image = "ui/fork.png" }
 
-            local keyGrid = grid[maze.yKey - 1][maze.xKey - 1]
-            keyGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
-            grid[maze.yKey - 1][maze.xKey - 1] = keyGrid
-        end
-
-        self.displayObject.x = gridSquare.displayObject.x
-        self.displayObject.y = gridSquare.displayObject.y
-    end
-
-    -- Key do jogo
-    local key = { image = "ui/key.png" }
-
-    function key:positionKey(gridSquare)
+    function fork:positionFork(gridSquare)
         if self.displayObject == nil then
             self.displayObject = display.newImageRect(grid.displayGroup,
             self.image, grid.squareSize*1, grid.squareSize*1)
@@ -319,6 +301,39 @@ function scene:create( event )
 
         self.displayObject.x = gridSquare.displayObject.x
         self.displayObject.y = gridSquare.displayObject.y
+    end
+
+    function fork:getFork(gridSquare)
+        if self.displayObject ~= nil and not maze.hasFork then
+            maze.hasFork = true
+
+            local forkGrid = grid[maze.yFork - 1][maze.xFork - 1]
+            forkGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
+            grid[maze.yFork - 1][maze.xFork - 1] = forkGrid
+        end
+    end
+
+    -- Knife do jogo
+    local knife = { image = "ui/knife.png" }
+
+    function knife:positionKnife(gridSquare)
+        if self.displayObject == nil then
+            self.displayObject = display.newImageRect(grid.displayGroup,
+            self.image, grid.squareSize*1, grid.squareSize*1)
+        end
+
+        self.displayObject.x = gridSquare.displayObject.x
+        self.displayObject.y = gridSquare.displayObject.y
+    end
+
+    function knife:getKnife(gridSquare)
+        if self.displayObject ~= nil and not maze.hasKnife then
+            maze.hasKnife = true
+
+            local knifeGrid = grid[maze.yKnife - 1][maze.xKnife - 1]
+            knifeGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
+            grid[maze.yKnife - 1][maze.xKnife - 1] = knifeGrid
+        end
     end
 
     --## Create the runner
@@ -350,10 +365,16 @@ function scene:create( event )
         self.x = gridSquare.x
         self.y = gridSquare.y
 
-        if self.gridSquare.finish and maze.hasKey then
+        if self.gridSquare.finish and maze.hasFork and maze.hasKnife then
             finish()
-        elseif self.gridSquare.keyposition then
-            padlock:openPadlock(grid[maze.yFinish - 1][maze.xFinish - 1])
+        elseif self.gridSquare.forkposition then
+            print('oii1')
+            print("getFork", maze.hasFork)
+            fork:getFork(grid[maze.yFinish - 1][maze.xFinish - 1])
+        elseif self.gridSquare.knifeposition then
+            print('oii2')
+            print("getKnife", maze.hasKnife)
+            knife:getKnife(grid[maze.yFinish - 1][maze.xFinish - 1])
         end
     end
 
@@ -564,7 +585,6 @@ function scene:create( event )
             timeText.text = "Tempo: " .. timeDuration
         else
             print('Fim do tempo:', timeDuration)
-            -- padlock:openPadlock(grid[maze.yFinish - 1][maze.xFinish - 1])
             timeIsOver(grid)
         end
     end
@@ -572,8 +592,9 @@ function scene:create( event )
     function play()
 
         -- The runner starts off in the maze start.
-        padlock:finishLine(grid[maze.yFinish - 1][maze.xFinish - 1])
-        key:positionKey(grid[maze.yKey - 1][maze.xKey - 1])
+        cheese:finishLine(grid[maze.yFinish - 1][maze.xFinish - 1])
+        fork:positionFork(grid[maze.yFork - 1][maze.xFork - 1])
+        knife:positionKnife(grid[maze.yKnife - 1][maze.xKnife - 1])
         runner:enter(grid[maze.yStart - 1][maze.xStart - 1])
 
         -- The play again button starts out hidden since we haven't started yet!

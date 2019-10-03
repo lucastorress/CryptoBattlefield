@@ -35,7 +35,7 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 25
+local timeDuration = 35
 
 -- Define a configuração do labirinto
 local maze = {
