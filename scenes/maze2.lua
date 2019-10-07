@@ -35,7 +35,7 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 35
+local timeDuration = 40 -- 35
 
 -- Define a configuração do labirinto
 local maze = {
@@ -564,8 +564,10 @@ function scene:create( event )
             timeText.text = "Tempo: " .. timeDuration
         else
             print('Fim do tempo:', timeDuration)
-            -- padlock:openPadlock(grid[maze.yFinish - 1][maze.xFinish - 1])
             timeIsOver(grid)
+        end
+        if timeDuration <= 10 then
+            timeText:setTextColor(1, 0, 0)
         end
     end
 

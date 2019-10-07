@@ -35,32 +35,32 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 60
+local timeDuration = 35 -- 30
 
 -- Define a configuração do labirinto
 local maze = {
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,1,0,0,0,0,0,0,0,0,0,0,0,1},
+    {1,0,1,0,1,1,1,1,1,0,1,1,1,0,1},
+    {1,0,0,0,0,0,1,0,0,0,1,0,1,0,1},
+    {1,0,1,1,1,1,1,0,1,1,1,0,1,0,1},
+    {1,0,1,0,0,0,0,0,1,0,0,0,1,0,1},
+    {1,0,1,0,1,1,1,1,1,0,1,0,1,0,1},
+    {1,0,1,0,1,0,0,0,1,0,1,0,0,0,1},
+    {1,1,1,0,1,0,1,1,1,1,1,1,1,0,1},
+    {1,0,0,0,1,0,0,0,0,0,0,0,1,0,1},
+    {1,0,1,1,1,1,1,1,1,1,1,0,1,0,1},
+    {1,0,1,0,0,0,0,0,1,0,0,0,1,0,1},
+    {1,0,1,0,1,1,1,0,1,0,1,1,1,0,1},
+    {1,0,0,0,0,0,1,0,0,0,1,0,0,0,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 }
 maze.rows = table.getn(maze)
 maze.columns = table.getn(maze[1])
-maze.xStart, maze.yStart = 4, 4
+maze.xStart, maze.yStart = 2, 8
 maze.xFinish, maze.yFinish = 8, 8
-maze.xFork, maze.yFork = 2, 14
-maze.xKnife, maze.yKnife = 4, 13
+maze.xFork, maze.yFork = 12, 14
+maze.xKnife, maze.yKnife = 10, 8
 maze.hasFork = false
 maze.hasKnife = false
 
@@ -368,11 +368,9 @@ function scene:create( event )
         if self.gridSquare.finish and maze.hasFork and maze.hasKnife then
             finish()
         elseif self.gridSquare.forkposition then
-            print('oii1')
             print("getFork", maze.hasFork)
             fork:getFork(grid[maze.yFinish - 1][maze.xFinish - 1])
         elseif self.gridSquare.knifeposition then
-            print('oii2')
             print("getKnife", maze.hasKnife)
             knife:getKnife(grid[maze.yFinish - 1][maze.xFinish - 1])
         end
@@ -586,6 +584,9 @@ function scene:create( event )
         else
             print('Fim do tempo:', timeDuration)
             timeIsOver(grid)
+        end
+        if timeDuration <= 10 then
+            timeText:setTextColor(1, 0, 0)
         end
     end
 

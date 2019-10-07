@@ -5,4 +5,4 @@
 -----------------------------------------------------------------------------------------
 local composer = require( "composer" )
 
-composer.gotoScene( "scenes.maze4" )
+composer.gotoScene( "scenes.menu" )
