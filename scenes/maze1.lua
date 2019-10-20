@@ -11,6 +11,11 @@ local function gotoNextPhase()
 	composer.gotoScene( "scenes.maze2", { time=800, effect="crossFade" } )
 end
 
+local function gotoMenu()
+	composer.removeScene( "scenes.maze1" )
+	composer.gotoScene( "scenes.menu", { time=800, effect="crossFade" } )
+end
+
 local function timeIsOver()
     print("Tempo acabou.")
 	composer.removeScene( "scenes.maze1" )
@@ -64,7 +69,6 @@ local timeDisplay = display.newGroup()
 local gridDisplayGroup = display.newGroup()
 local controlsDisplayGroup = display.newGroup()
 local startButtonDisplayGroup = display.newGroup()
-local playAgainButtonDisplayGroup = display.newGroup()
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -97,6 +101,8 @@ function scene:create( event )
                         355*0.60, 115*0.60)
     button_menu.x = display.contentCenterX - 300
     button_menu.y = 10
+
+    button_menu:addEventListener( "tap", gotoMenu )
 
     local button_pause = display.newImageRect(sceneGroup, "ui/button_pause.png",
                         355*0.60, 115*0.60)
@@ -550,25 +556,6 @@ function scene:create( event )
         button.displayGroup.isVisible = false
     end
 
-    -- # Create the Play Again button
-
-    local playAgainButton = {}
-
-    playAgainButton.displayGroup = playAgainButtonDisplayGroup
-
-    playAgainButton.img = display.newImageRect( playAgainButton.displayGroup, "ui/button_play.png", 500, 80 )
-    playAgainButton.img.x = controlCenterX
-    playAgainButton.img.y = controlCenterY - 18
-    playAgainButton.touch = function(event)
-        if event.phase == "began" then
-            gotoNextPhase()
-        end
-    end
-    playAgainButton.displayGroup:addEventListener("touch", playAgainButton.touch)
-
-    playAgainButton.show = startButton.show
-    playAgainButton.hide = startButton.hide
-
     function startCountTime(event)
         if timeDuration > 0 then
             timeDuration = timeDuration - 1
@@ -588,9 +575,6 @@ function scene:create( event )
         padlock:finishLine(grid[maze.yFinish - 1][maze.xFinish - 1])
         key:positionKey(grid[maze.yKey - 1][maze.xKey - 1])
         runner:enter(grid[maze.yStart - 1][maze.xStart - 1])
-
-        -- The play again button starts out hidden since we haven't started yet!
-        playAgainButton:hide()
 
         -- The controls start out hidden because we want the player to call "start"
         -- first.
@@ -612,7 +596,6 @@ function scene:create( event )
     -- Finish the game by hiding the controls and displaying the play again button.
     function finish()
         controls:hide()
-        -- playAgainButton:show()
         gotoNextPhase()
     end
 
@@ -635,7 +618,6 @@ function scene:show( event )
         sceneGroup:insert(gridDisplayGroup)
         sceneGroup:insert(controlsDisplayGroup)
         sceneGroup:insert(startButtonDisplayGroup)
-        sceneGroup:insert(playAgainButtonDisplayGroup)
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
