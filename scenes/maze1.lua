@@ -35,7 +35,7 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 30 -- 25
+local timeDuration = 300 -- 25
 
 -- Define a configuração do labirinto
 local maze = {
@@ -76,17 +76,32 @@ function scene:create( event )
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
     sceneGroup:insert(gridBackground)
-    local myRoundedRect = display.newRoundedRect( 0, 0, 300, 100, 12 )
-    myRoundedRect.strokeWidth = 3
-    myRoundedRect:setFillColor( 0.5 )
-    myRoundedRect:setStrokeColor( 0.8, 0, 0 )
-    myRoundedRect.x = display.contentCenterX
-    myRoundedRect.y = 10
-    sceneGroup:insert(myRoundedRect)
+    -- local myRoundedRect = display.newRoundedRect( 0, 0, 300, 100, 12 )
+    -- myRoundedRect.strokeWidth = 3
+    -- myRoundedRect:setFillColor( 0.5 )
+    -- myRoundedRect:setStrokeColor( 0.8, 0, 0 )
+    -- myRoundedRect.x = display.contentCenterX
+    -- myRoundedRect.y = 10
+    -- sceneGroup:insert(myRoundedRect)
+
+    local bgTime = display.newImageRect(sceneGroup, "ui/bg_time.png",
+                        300, 100)
+    bgTime.x = display.contentCenterX
+    bgTime.y = 10
 
     local timeText
-    timeText = display.newText( sceneGroup, "Tempo: " .. timeDuration, display.contentCenterX, 10, native.systemFont, 36 )
+    timeText = display.newText( sceneGroup, "Tempo: " .. timeDuration, display.contentCenterX, 10, native.systemFontBold, 36 )
     timeText:setTextColor(1, 1, 1)
+
+    local button_menu = display.newImageRect(sceneGroup, "ui/button_menu.png",
+                        355*0.60, 115*0.60)
+    button_menu.x = display.contentCenterX - 300
+    button_menu.y = 10
+
+    local button_pause = display.newImageRect(sceneGroup, "ui/button_pause.png",
+                        355*0.60, 115*0.60)
+    button_pause.x = display.contentCenterX + 300
+    button_pause.y = 10
 
     -- ### Build the map grid.
 
@@ -126,7 +141,7 @@ function scene:create( event )
     -- Just like we wanted to leave a bit of room along the right edge, we want
     -- to leave some room on top of the screen. I found this to be a good
     -- size but you can change it if you want.
-    grid.yStart = 200
+    grid.yStart = 150
 
     -- Lastly, we want to create a group for all the grid tiles and objects on
     -- our map so we can move them around all at once. This is going to help us
@@ -371,9 +386,9 @@ function scene:create( event )
     local controlCenterX = display.contentCenterX
 
     -- Posição Y do controle na tela
-    local controlCenterY = screenHeight - screenHeight / 12
+    local controlCenterY = screenHeight - screenHeight / 8
     
-    local controlCenterRadius = controllerWidth / 2 - correctionMarginControl
+    local controlCenterRadius = controllerWidth / 2 -- correctionMarginControl
 
     -- The size of our control buttons. The up and down
     local upDownWidth = 67
@@ -398,7 +413,7 @@ function scene:create( event )
     local circlePad = display.newCircle(controls.displayGroup,
         controlCenterX, controlCenterY, controlCenterRadius)
     -- Let's make it stand out from the background.
-    circlePad:setFillColor(0.8, 0.8, 0.3, 0.75)
+    circlePad:setFillColor(0.15, 0.53, 0.55, 1)
 
     -- Here we create the display objects for the controls and place them on the
     -- screen inside our control circle. Because there's a *lot* of typing in the
