@@ -36,7 +36,7 @@ function scene:create( event )
 	title.x = display.contentCenterX
 	title.y = 200
 
-    local playButton = display.newImageRect( sceneGroup, "ui/button_play1.png", 500, 80 )
+    local playButton = display.newImageRect( sceneGroup, "ui/button_play_new.png", 596, 115 )
     playButton.x = display.contentCenterX
     playButton.y = 700
 	
