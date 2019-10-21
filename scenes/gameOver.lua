@@ -32,7 +32,7 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY-50
 
-    local playAgainButton = display.newImageRect( sceneGroup, "ui/button_play_again.png", 500, 80 )
+    local playAgainButton = display.newImageRect( sceneGroup, "ui/button_play_again_new.png", 595*0.75, 115*0.75 )
     playAgainButton.x = display.contentCenterX
     playAgainButton.y = display.contentCenterY+400
 	
