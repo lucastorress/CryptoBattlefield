@@ -566,7 +566,7 @@ function scene:create( event )
             timeIsOver(grid)
         end
         if timeDuration <= 10 then
-            timeText:setTextColor(1, 0, 0)
+            timeText:setTextColor(1, 1, 0)
         end
     end
 
