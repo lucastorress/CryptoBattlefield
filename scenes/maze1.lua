@@ -104,7 +104,8 @@ function scene:create( event )
 
     button_menu:addEventListener( "tap", gotoMenu )
 
-    local button_pause = display.newImageRect(sceneGroup, "ui/button_pause.png",
+    -- Global Variable
+    button_pause = display.newImageRect(sceneGroup, "ui/button_pause.png",
                         355*0.60, 115*0.60)
     button_pause.x = display.contentCenterX + 300
     button_pause.y = 10
@@ -623,6 +624,26 @@ function scene:show( event )
         -- Code here runs when the scene is entirely on screen
         print('Entrei aqui')
         timerIsOver = timer.performWithDelay(1000, startCountTime, timeDuration+1)
+        paused = false
+
+        function gotoPause()
+            -- composer.showOverlay( "pause", options )
+            if paused then
+                local resumeTime = timer.resume( timerIsOver )
+                print( "Resume time is " .. resumeTime )
+                controlsDisplayGroup.isVisible = true
+                paused = false
+                print(paused)
+            else
+                local pauseTime = timer.pause( timerIsOver )
+                print( "Time remaining is " .. pauseTime )
+                controlsDisplayGroup.isVisible = false
+                paused = true
+                print(paused)
+            end
+        end
+
+        button_pause:addEventListener( "tap", gotoPause )
  
     end
 end
