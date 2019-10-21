@@ -330,14 +330,15 @@ function scene:create( event )
         if self.displayObject ~= nil and not maze.hasFork then
             maze.hasFork = true
 
-            local forkGrid = grid[maze.yFork - 1][maze.xFork - 1]
-            forkGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
-            grid[maze.yFork - 1][maze.xFork - 1] = forkGrid
+            -- local forkGrid = grid[maze.yFork - 1][maze.xFork - 1]
+            -- forkGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
+            -- grid[maze.yFork - 1][maze.xFork - 1] = forkGrid
+            fork.displayObject.isVisible = false
         end
     end
 
     -- Knife do jogo
-    local knife = { image = "ui/knife.png" }
+    knife = { image = "ui/knife.png" }
 
     function knife:positionKnife(gridSquare)
         if self.displayObject == nil then
@@ -349,13 +350,18 @@ function scene:create( event )
         self.displayObject.y = gridSquare.displayObject.y
     end
 
+    function setKnifeInvisible()
+        knife.displayGroup.isVisible = false
+    end
+
     function knife:getKnife(gridSquare)
         if self.displayObject ~= nil and not maze.hasKnife then
             maze.hasKnife = true
 
-            local knifeGrid = grid[maze.yKnife - 1][maze.xKnife - 1]
-            knifeGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
-            grid[maze.yKnife - 1][maze.xKnife - 1] = knifeGrid
+            -- local knifeGrid = grid[maze.yKnife - 1][maze.xKnife - 1]
+            -- knifeGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
+            -- grid[maze.yKnife - 1][maze.xKnife - 1] = knifeGrid
+            knife.displayObject.isVisible = false
         end
     end
 

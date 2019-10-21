@@ -40,7 +40,7 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 300 -- 25
+local timeDuration = 30 -- 25
 
 -- Define a configuração do labirinto
 local maze = {
@@ -289,6 +289,19 @@ function scene:create( event )
     grid[maze.yFinish - 1][maze.xFinish - 1].finish = true
     grid[maze.yKey - 1][maze.xKey - 1].keyposition = true
 
+    -- Key do jogo
+    local key = { image = "ui/key.png" }
+
+    function key:positionKey(gridSquare)
+        if self.displayObject == nil then
+            self.displayObject = display.newImageRect(grid.displayGroup,
+            self.image, grid.squareSize*1, grid.squareSize*1)
+        end
+
+        self.displayObject.x = gridSquare.displayObject.x
+        self.displayObject.y = gridSquare.displayObject.y
+    end
+
     -- Final do jogo
     local padlock = {
         image = "ui/padlock_close.png",
@@ -317,22 +330,11 @@ function scene:create( event )
             self.displayObject = display.newImageRect(grid.displayGroup,
             self.image_open, grid.squareSize*1, grid.squareSize*1)
 
-            local keyGrid = grid[maze.yKey - 1][maze.xKey - 1]
-            keyGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
-            grid[maze.yKey - 1][maze.xKey - 1] = keyGrid
-        end
+            key.displayObject.isVisible = false
 
-        self.displayObject.x = gridSquare.displayObject.x
-        self.displayObject.y = gridSquare.displayObject.y
-    end
-
-    -- Key do jogo
-    local key = { image = "ui/key.png" }
-
-    function key:positionKey(gridSquare)
-        if self.displayObject == nil then
-            self.displayObject = display.newImageRect(grid.displayGroup,
-            self.image, grid.squareSize*1, grid.squareSize*1)
+            -- local keyGrid = grid[maze.yKey - 1][maze.xKey - 1]
+            -- keyGrid.displayObject:setFillColor(0.71, 0, 0.37, 1)
+            -- grid[maze.yKey - 1][maze.xKey - 1] = keyGrid
         end
 
         self.displayObject.x = gridSquare.displayObject.x
