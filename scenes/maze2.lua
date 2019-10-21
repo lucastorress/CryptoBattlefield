@@ -11,6 +11,11 @@ local function gotoNextPhase()
 	composer.gotoScene( "scenes.maze3", { time=800, effect="crossFade" } )
 end
 
+local function gotoMenu()
+	composer.removeScene( "scenes.maze2" )
+	composer.gotoScene( "scenes.menu", { time=800, effect="crossFade" } )
+end
+
 local function timeIsOver()
     print("Tempo acabou.")
 	composer.removeScene( "scenes.maze2" )
@@ -68,7 +73,6 @@ local timeDisplay = display.newGroup()
 local gridDisplayGroup = display.newGroup()
 local controlsDisplayGroup = display.newGroup()
 local startButtonDisplayGroup = display.newGroup()
-local playAgainButtonDisplayGroup = display.newGroup()
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -80,61 +84,50 @@ function scene:create( event )
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
     sceneGroup:insert(gridBackground)
-    local myRoundedRect = display.newRoundedRect( 0, 0, 300, 100, 12 )
-    myRoundedRect.strokeWidth = 3
-    myRoundedRect:setFillColor( 0.5 )
-    myRoundedRect:setStrokeColor( 0.8, 0, 0 )
-    myRoundedRect.x = display.contentCenterX
-    myRoundedRect.y = 10
-    sceneGroup:insert(myRoundedRect)
+    -- local myRoundedRect = display.newRoundedRect( 0, 0, 300, 100, 12 )
+    -- myRoundedRect.strokeWidth = 3
+    -- myRoundedRect:setFillColor( 0.5 )
+    -- myRoundedRect:setStrokeColor( 0.8, 0, 0 )
+    -- myRoundedRect.x = display.contentCenterX
+    -- myRoundedRect.y = 10
+    -- sceneGroup:insert(myRoundedRect)
+
+    local bgTime = display.newImageRect(sceneGroup, "ui/bg_time.png",
+                        300, 100)
+    bgTime.x = display.contentCenterX
+    bgTime.y = 10
 
     local timeText
-    timeText = display.newText( sceneGroup, "Tempo: " .. timeDuration, display.contentCenterX, 10, native.systemFont, 36 )
+    timeText = display.newText( sceneGroup, "Tempo: " .. timeDuration, display.contentCenterX, 10, native.systemFontBold, 36 )
     timeText:setTextColor(1, 1, 1)
 
+    local button_menu = display.newImageRect(sceneGroup, "ui/button_menu.png",
+                        355*0.60, 115*0.60)
+    button_menu.x = display.contentCenterX - 300
+    button_menu.y = 10
+
+    button_menu:addEventListener( "tap", gotoMenu )
+
+    -- Global Variable
+    button_pause = display.newImageRect(sceneGroup, "ui/button_pause.png",
+                        355*0.60, 115*0.60)
+    button_pause.x = display.contentCenterX + 300
+    button_pause.y = 10
+
     -- ### Build the map grid.
-
-    -- Games need a field of play. One type of field is a two-dimensional grid.
-    -- It's like taking graph paper and laying it over a section of your screen
-    -- then you allow your game pieces to move between the grid squares based
-    -- on the rules of the game. Chess and Checkers are board games that work
-    -- this way. The Legend of Zelda (on old Nintendo) is a video game that
-    -- works this way and there are lots of others. Can you think of a few?
-
-    -- We want to make a grid. To do this in Lua we'll use an object. Let's
-    -- start with an empty one.
     local grid = {}
 
-    -- Grids can be described by the number of squares across as well as the
-    -- number of squares up and down. We call the squares from left to right
-    -- "the *x* direction and squares up and down the *y* direction.
     grid.xSquares = maze.columns
     grid.ySquares = maze.rows
 
-    -- The total width of our grid is going to be the width of the screen
-    -- without the space taken up by the controller and without the space we
-    -- decided to leave for our margin.
     grid.totalWidth = screenWidth
 
-    -- Since we already decided how big our whole grid will be and how many
-    -- squares it will have, we can figure out how big our squares are using
-    -- basic algebra. The size of each square is equal to the width of the whole
-    -- map divided by the width of each square.
     grid.squareSize = grid.totalWidth / grid.xSquares
 
-    -- We're going to start our map at the edge of our controller. The last
-    -- pixel of our controller area is going to be the first pixel of our map
-    -- grid.
-    grid.xStart = display.contentCenterX/15
+    grid.xStart = display.contentCenterX/11
 
-    -- Just like we wanted to leave a bit of room along the right edge, we want
-    -- to leave some room on top of the screen. I found this to be a good
-    -- size but you can change it if you want.
-    grid.yStart = 200
+    grid.yStart = 150
 
-    -- Lastly, we want to create a group for all the grid tiles and objects on
-    -- our map so we can move them around all at once. This is going to help us
-    -- with positioning elements on screen later on.
     grid.displayGroup = gridDisplayGroup
 
     -- The map is going to be shown on screen with its (0, 0) being the
@@ -147,11 +140,6 @@ function scene:create( event )
     -- These functions will be placed on our grid squares. They'll help us find
     -- adjacent squares when we need them.
     grid.functions = {
-        -- This function looks for the square to the left of the current one. If
-        -- this square's *x* coordinate is 0, that means it must be the leftmost
-        -- square in that row, so we just say that the square to the left of this
-        -- one is the same as this one. Otherwise, we find the square in this same
-        -- row whose *x* coordinate is one less than our current square.
         left = function(gridSquare)
             if gridSquare.x == 0 then
                 return gridSquare
@@ -160,13 +148,6 @@ function scene:create( event )
             end
         end,
 
-        -- When trying to find the square to the right, we need to watch out for
-        -- the rightmost square. Since we started counting squares at 0, the
-        -- rightmost square's *x* coordinate will be one less than the number of
-        -- grid squares in the *x* direction. So if the next square would be equal
-        -- to that number, we're at the end, and we give back the same square we
-        -- got, just like before otherwise, we return the square whose *x*
-        -- coordinate is one more than our current square.
         right = function(gridSquare)
             if gridSquare.x + 1 == grid.xSquares then
                 return gridSquare
@@ -175,9 +156,6 @@ function scene:create( event )
             end
         end,
 
-        -- If we're looking for the square above our current one. If we're in
-        -- the top row, that means we give back this square, otherwise we take
-        -- the square whose *y* coordinate is one less than the current square.
         above = function(gridSquare)
             if gridSquare.y == 0 then
                 return gridSquare
@@ -186,9 +164,6 @@ function scene:create( event )
             end
         end,
 
-        -- Just one more! To find the square below, we add one to the *y*
-        -- coordinate. Unless of course we're in the last row, in which case we
-        -- return the given square.
         below = function(gridSquare)
             if gridSquare.y + 1 == grid.ySquares then
                 return gridSquare
@@ -223,17 +198,6 @@ function scene:create( event )
             -- set the x and y fields of the square to match its coordinates.
             grid[y][x] = {x = x, y = y}
 
-            -- Now we create a display object for the rectangle. This is what
-            -- will allow us to actually draw the object on the screen.
-            -- The rectangle is part of the grid's display group. Just like we
-            -- are creating our own grid system, your computer has a grid system
-            -- made up of individual pixels and the *x* and *y* coordinates of
-            -- the display object aren't our *x* and *y* but we'll use our
-            -- coordinates to compute the pixel coordinates.
-
-            -- The pixel coordinate of a square will be our coordinate times the
-            -- size in pixels of a single square, then the width and height will
-            -- be that size alone.
             local rect = display.newRect(grid.displayGroup,
             grid.squareSize * x, grid.squareSize * y,
             grid.squareSize, grid.squareSize)
@@ -365,19 +329,12 @@ function scene:create( event )
     end
 
     --##  Creating the controls.
-
-    -- Our controls will be composed of an on-screen directional pad, just like
-    -- the one on a video game controller. Pressing the up, down, left, and
-    -- right buttons will move the runner around the map grid 
-
-    -- The center of our control pad will be at the halfway point of the control
-    -- area width...
     local controlCenterX = display.contentCenterX
 
     -- Posição Y do controle na tela
-    local controlCenterY = screenHeight - screenHeight / 12
+    local controlCenterY = screenHeight - screenHeight / 8
     
-    local controlCenterRadius = controllerWidth / 2 - correctionMarginControl
+    local controlCenterRadius = controllerWidth / 2 -- correctionMarginControl
 
     -- The size of our control buttons. The up and down
     local upDownWidth = 67
@@ -402,16 +359,8 @@ function scene:create( event )
     local circlePad = display.newCircle(controls.displayGroup,
         controlCenterX, controlCenterY, controlCenterRadius)
     -- Let's make it stand out from the background.
-    circlePad:setFillColor(0.8, 0.8, 0.3, 0.75)
+    circlePad:setFillColor(0.15, 0.53, 0.55, 1)
 
-    -- Here we create the display objects for the controls and place them on the
-    -- screen inside our control circle. Because there's a *lot* of typing in the
-    -- control name. (Think about typing `controls.up.displayObject` over and over)
-    -- We give each one a short, local name, then assign it to the field where it
-    -- belongs at the end. This is a very common strategy for creation blocks, but
-    -- whenver you do it, it makes the code just a little bit more confusing. So you
-    -- have to decide what is more important, saving yourself some typing or being
-    -- clearer so that the reader of the code knows what is going on.
     local up = display.newImageRect(controls.displayGroup, "ui/controls/arrow_up.png",
         upDownWidth, upDownHeight)
     up.x = controlCenterX
@@ -449,12 +398,6 @@ function scene:create( event )
     end
 
     --## Make the runner move
-
-    -- It's time to create functions that will move our runner into new grid
-    -- squares. We'll define functions for moving left, right, up, and down.
-    -- The function will check that the grid square is free or has a wall before
-    -- moving into it. If the square is free, the runner will move there.
-    -- Otherwise the runner will stay where he is.
 
     -- This function will run when we press the left arrow.
     local function pressLeft(event)
@@ -539,25 +482,6 @@ function scene:create( event )
         button.displayGroup.isVisible = false
     end
 
-    -- # Create the Play Again button
-
-    local playAgainButton = {}
-
-    playAgainButton.displayGroup = playAgainButtonDisplayGroup
-
-    playAgainButton.img = display.newImageRect( playAgainButton.displayGroup, "ui/button_play.png", 500, 80 )
-    playAgainButton.img.x = controlCenterX
-    playAgainButton.img.y = controlCenterY - 18
-    playAgainButton.touch = function(event)
-        if event.phase == "began" then
-            gotoNextPhase()
-        end
-    end
-    playAgainButton.displayGroup:addEventListener("touch", playAgainButton.touch)
-
-    playAgainButton.show = startButton.show
-    playAgainButton.hide = startButton.hide
-
     function startCountTime(event)
         if timeDuration > 0 then
             timeDuration = timeDuration - 1
@@ -567,7 +491,7 @@ function scene:create( event )
             timeIsOver(grid)
         end
         if timeDuration <= 10 then
-            timeText:setTextColor(1, 0, 0)
+            timeText:setTextColor(1, 1, 0)
         end
     end
 
@@ -577,9 +501,6 @@ function scene:create( event )
         padlock:finishLine(grid[maze.yFinish - 1][maze.xFinish - 1])
         key:positionKey(grid[maze.yKey - 1][maze.xKey - 1])
         runner:enter(grid[maze.yStart - 1][maze.xStart - 1])
-
-        -- The play again button starts out hidden since we haven't started yet!
-        playAgainButton:hide()
 
         -- The controls start out hidden because we want the player to call "start"
         -- first.
@@ -601,7 +522,6 @@ function scene:create( event )
     -- Finish the game by hiding the controls and displaying the play again button.
     function finish()
         controls:hide()
-        -- playAgainButton:show()
         gotoNextPhase()
     end
 
@@ -624,12 +544,31 @@ function scene:show( event )
         sceneGroup:insert(gridDisplayGroup)
         sceneGroup:insert(controlsDisplayGroup)
         sceneGroup:insert(startButtonDisplayGroup)
-        sceneGroup:insert(playAgainButtonDisplayGroup)
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
-        print('Entrei aqui')
+        -- print('Entrei aqui')
         timerIsOver = timer.performWithDelay(1000, startCountTime, timeDuration+1)
+        paused = false
+
+        function gotoPause()
+            -- composer.showOverlay( "pause", options )
+            if paused then
+                local resumeTime = timer.resume( timerIsOver )
+                print( "Resume time is " .. resumeTime )
+                controlsDisplayGroup.isVisible = true
+                paused = false
+                -- print(paused)
+            else
+                local pauseTime = timer.pause( timerIsOver )
+                print( "Time remaining is " .. pauseTime )
+                controlsDisplayGroup.isVisible = false
+                paused = true
+                -- print(paused)
+            end
+        end
+
+        button_pause:addEventListener( "tap", gotoPause )
  
     end
 end
@@ -656,7 +595,7 @@ function scene:destroy( event )
  
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
-    print("Timer cancel")
+    -- print("Timer cancel")
     timer.cancel(timerIsOver)
  
 end
