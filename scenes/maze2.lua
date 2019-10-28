@@ -573,12 +573,14 @@ function scene:show( event )
                 controlsDisplayGroup.isVisible = true
                 paused = false
                 -- print(paused)
+                audio.resume( musicTrack )
             else
                 local pauseTime = timer.pause( timerIsOver )
                 print( "Time remaining is " .. pauseTime )
                 controlsDisplayGroup.isVisible = false
                 paused = true
                 -- print(paused)
+                audio.pause( musicTrack )
             end
         end
 
