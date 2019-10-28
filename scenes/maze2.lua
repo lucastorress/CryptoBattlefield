@@ -12,11 +12,23 @@ local function gotoNextPhase()
 end
 
 local function gotoMenu()
+    -- Stop the music!
+    audio.stop( 2 )
+    musicTrack = nil
+	-- Dispose audio!
+    audio.dispose( musicTrack )
+    musicTrack = nil
 	composer.removeScene( "scenes.maze2" )
 	composer.gotoScene( "scenes.menu", { time=800, effect="crossFade" } )
 end
 
 local function timeIsOver()
+    -- Stop the music!
+    audio.stop( 2 )
+    musicTrack = nil
+	-- Dispose audio!
+    audio.dispose( musicTrack )
+    musicTrack = nil
     print("Tempo acabou.")
 	composer.removeScene( "scenes.maze2" )
     composer.gotoScene( "scenes.gameOver", { time=500, effect="flipFadeOutIn" } )
@@ -40,7 +52,7 @@ local controllerWidth = screenWidth / 3
 local correctionMarginControl = 30
 
 -- Define o tempo de duração da fase
-local timeDuration = 40 -- 35
+local timeDuration = 35 -- 35
 
 -- Define a configuração do labirinto
 local maze = {

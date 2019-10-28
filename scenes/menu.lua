@@ -9,11 +9,19 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 
 -- Initialize variables
+local musicTrack
 
 local screenWidth = display.contentWidth
 local screenHeight = display.contentHeight
 
 local function gotoGame()
+	-- audio.fadeOut( { channel=1, time=5000 } )
+	-- Stop the music!
+	audio.stop( 1 )
+	musicTrack = nil
+	-- Dispose audio!
+	audio.dispose( musicTrack )
+	musicTrack = nil
 	composer.removeScene( "scenes.menu" )
 	composer.gotoScene( "scenes.maze1", { time=800, effect="crossFade" } )
 end
@@ -40,6 +48,7 @@ function scene:create( event )
     playButton.x = display.contentCenterX
     playButton.y = 700
 	
+	musicTrack = audio.loadStream( "ui/audio/intro_Wolf_Kisses.mp3")
 
 	playButton:addEventListener( "tap", gotoGame )
 end
@@ -56,6 +65,8 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
+		-- Start the music!
+		audio.play( musicTrack, { channel=1, loops=-1, fadein = 1500 } )
 	end
 end
 
@@ -80,6 +91,8 @@ function scene:destroy( event )
 
 	local sceneGroup = self.view
 	-- Code here runs prior to the removal of scene's view
+	-- Dispose audio!
+	audio.dispose( musicTrack )
 end
 
 

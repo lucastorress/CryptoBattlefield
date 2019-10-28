@@ -12,11 +12,22 @@ local function gotoNextPhase()
 end
 
 local function gotoMenu()
+    -- Stop the music!
+    audio.stop( 2 )
+    musicTrack = nil
+	-- Dispose audio!
+    audio.dispose( musicTrack )
+    musicTrack = nil
 	composer.removeScene( "scenes.maze1" )
 	composer.gotoScene( "scenes.menu", { time=800, effect="crossFade" } )
 end
 
 local function timeIsOver()
+    audio.stop( 2 )
+    musicTrack = nil
+	-- Dispose audio!
+    audio.dispose( musicTrack )
+    musicTrack = nil
     print("Tempo acabou.")
 	composer.removeScene( "scenes.maze1" )
     composer.gotoScene( "scenes.gameOver", { time=500, effect="flipFadeOutIn" } )
@@ -24,6 +35,8 @@ end
 
 local screenWidth = display.contentWidth
 local screenHeight = display.contentHeight
+
+local musicTrack
 
 -- Load background
 local gridBackground = display.newImageRect( "ui/background_maze.png", 1560, 1595 ) -- x: 260
@@ -79,6 +92,8 @@ function scene:create( event )
 
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
+    musicTrack = audio.loadStream( "ui/audio/scenes_Psychedelicacy.mp3")
+
     sceneGroup:insert(gridBackground)
     -- local myRoundedRect = display.newRoundedRect( 0, 0, 300, 100, 12 )
     -- myRoundedRect.strokeWidth = 3
@@ -646,6 +661,7 @@ function scene:show( event )
         end
 
         button_pause:addEventListener( "tap", gotoPause )
+        audio.play( musicTrack, { channel=2, loops=-1 } )
  
     end
 end
@@ -662,6 +678,8 @@ function scene:hide( event )
  
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
+        -- Stop the music!
+		audio.stop( 2 )
  
     end
 end
@@ -674,6 +692,8 @@ function scene:destroy( event )
     -- Code here runs prior to the removal of scene's view
     print("Timer cancel")
     timer.cancel(timerIsOver)
+    -- Dispose audio!
+    audio.dispose( musicTrack )
  
 end
  
