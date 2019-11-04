@@ -494,6 +494,8 @@ function scene:create( event )
     -- moving into it. If the square is free, the runner will move there.
     -- Otherwise the runner will stay where he is.
 
+    local button_timer
+    local button_speed = 200
     -- This function will run when we press the left arrow.
     local function pressLeft(event)
         if event.phase == "began" then
@@ -501,6 +503,18 @@ function scene:create( event )
             if runner:canEnter(nextSquare) then
                 runner:enter(nextSquare)
             end
+            button_timer = timer.performWithDelay(button_speed, function()
+                local nextSquare  = runner.gridSquare:left()
+                if runner:canEnter(nextSquare) then
+                    runner:enter(nextSquare)
+                end
+            end, -1)
+        elseif ( event.phase == "moved" ) then
+            -- Code executed when the touch is moved over the object
+            timer.cancel(button_timer)
+        elseif ( event.phase == "ended" ) then
+            -- Code executed when the touch lifts off the object
+            timer.cancel(button_timer)
         end
     end
 
@@ -511,6 +525,18 @@ function scene:create( event )
             if runner:canEnter(nextSquare) then
                 runner:enter(nextSquare)
             end
+            button_timer = timer.performWithDelay(button_speed, function()
+                local nextSquare  = runner.gridSquare:right()
+                if runner:canEnter(nextSquare) then
+                    runner:enter(nextSquare)
+                end
+            end, -1)
+        elseif ( event.phase == "moved" ) then
+            -- Code executed when the touch is moved over the object
+            timer.cancel(button_timer)
+        elseif ( event.phase == "ended" ) then
+            -- Code executed when the touch lifts off the object
+            timer.cancel(button_timer)
         end
     end
 
@@ -521,6 +547,18 @@ function scene:create( event )
             if runner:canEnter(nextSquare) then
                 runner:enter(nextSquare)
             end
+            button_timer = timer.performWithDelay(button_speed, function()
+                local nextSquare  = runner.gridSquare:above()
+                if runner:canEnter(nextSquare) then
+                    runner:enter(nextSquare)
+                end
+            end, -1)
+        elseif ( event.phase == "moved" ) then
+            -- Code executed when the touch is moved over the object
+            timer.cancel(button_timer)
+        elseif ( event.phase == "ended" ) then
+            -- Code executed when the touch lifts off the object
+            timer.cancel(button_timer)
         end
     end
 
@@ -531,6 +569,18 @@ function scene:create( event )
             if runner:canEnter(nextSquare) then
                 runner:enter(nextSquare)
             end
+            button_timer = timer.performWithDelay(button_speed, function()
+                local nextSquare  = runner.gridSquare:below()
+                if runner:canEnter(nextSquare) then
+                    runner:enter(nextSquare)
+                end
+            end, -1)
+        elseif ( event.phase == "moved" ) then
+            -- Code executed when the touch is moved over the object
+            timer.cancel(button_timer)
+        elseif ( event.phase == "ended" ) then
+            -- Code executed when the touch lifts off the object
+            timer.cancel(button_timer)
         end
     end
 
