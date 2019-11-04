@@ -352,7 +352,7 @@ function scene:create( event )
     
     local controlCenterRadius = controllerWidth / 2 -- correctionMarginControl
 
-    local multiplierControl = 0.085
+    local multiplierControl = 0.095
     -- The size of our control buttons. The up and down
     local upDownWidth = screenWidth*multiplierControl
     local upDownHeight = screenWidth*2.23*multiplierControl
@@ -417,7 +417,7 @@ function scene:create( event )
     --## Make the runner move
 
     local button_timer
-    local button_speed = 100
+    local button_speed = 150
     -- This function will run when we press the left arrow.
     local function pressLeft(event)
         if event.phase == "began" then

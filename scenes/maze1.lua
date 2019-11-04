@@ -416,7 +416,7 @@ function scene:create( event )
     
     local controlCenterRadius = controllerWidth / 2 -- correctionMarginControl
 
-    local multiplierControl = 0.085
+    local multiplierControl = 0.095
     -- The size of our control buttons. The up and down
     local upDownWidth = screenWidth*multiplierControl
     local upDownHeight = screenWidth*2.23*multiplierControl
