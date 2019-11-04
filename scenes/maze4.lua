@@ -8,7 +8,7 @@ composer.recycleOnSceneChange = true
 
 local function gotoNextPhase()
 	composer.removeScene( "scenes.maze4" )
-	composer.gotoScene( "scenes.menu", { time=800, effect="crossFade" } )
+	composer.gotoScene( "scenes.gameFinish", { time=800, effect="crossFade" } )
 end
 
 local function gotoMenu()
@@ -306,7 +306,7 @@ function scene:create( event )
     end
 
     grid[maze.yStart - 1][maze.xStart - 1].displayObject:setFillColor(0.92, 0.91, 0.51, 1) -- Cor da célula inicial do jogador
-    grid[maze.yFinish - 1][maze.xFinish - 1].displayObject:setFillColor(0.71, 0, 0.37, 1) -- Cor da célula de chegada do jogador (cheese)
+    grid[maze.yFinish - 1][maze.xFinish - 1].displayObject:setFillColor(0) -- Cor da célula de chegada do jogador (cheese)
     grid[maze.yFork - 1][maze.xFork - 1].displayObject:setFillColor(0) -- Cor da célula onde fica a fork
     grid[maze.yKnife - 1][maze.xKnife - 1].displayObject:setFillColor(0) -- Cor da célula onde fica a knife
     grid[maze.yStart - 1][maze.xStart - 1].start = true
