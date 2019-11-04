@@ -36,16 +36,20 @@ end
 
 local screenWidth = display.contentWidth
 local screenHeight = display.contentHeight
+local screenCenterX = display.contentCenterX
+local screenCenterY = display.contentCenterY
+
+local musicTrack
 
 -- Load background
 local gridBackground = display.newImageRect( "ui/background_maze.png", 1560, 1595 ) -- x: 260
-gridBackground.x = display.contentCenterX -- 150
-gridBackground.y = display.contentCenterY-50
+gridBackground.x = screenCenterX -- 150
+gridBackground.y = screenCenterY-50
 
 -- We want to make the main map as big as possible, but we need to
 -- have room for controls on the left side, so we'll portion out one
 -- sixth (1 / 6) of the screen width for the controller.
-local controllerWidth = screenWidth / 3
+local controllerWidth = screenWidth / 2.5
 
 -- We also want to leave a bit of room on the right side so the map doesn't
 -- touch the edge of the screen.
@@ -103,31 +107,31 @@ function scene:create( event )
     -- myRoundedRect.strokeWidth = 3
     -- myRoundedRect:setFillColor( 0.5 )
     -- myRoundedRect:setStrokeColor( 0.8, 0, 0 )
-    -- myRoundedRect.x = display.contentCenterX
+    -- myRoundedRect.x = screenCenterX
     -- myRoundedRect.y = 10
     -- sceneGroup:insert(myRoundedRect)
-
+    local menuCenterY = screenCenterY*0.1
     local bgTime = display.newImageRect(sceneGroup, "ui/bg_time.png",
-                        300, 100)
-    bgTime.x = display.contentCenterX
-    bgTime.y = 10
+                        screenHeight*3*0.08, screenHeight*0.08)
+    bgTime.x = screenCenterX
+    bgTime.y = menuCenterY
 
     local timeText
-    timeText = display.newText( sceneGroup, "Tempo: " .. timeDuration, display.contentCenterX, 10, native.systemFontBold, 36 )
+    timeText = display.newText( sceneGroup, "Tempo: " .. timeDuration, screenCenterX, menuCenterY, native.systemFontBold, 16 )
     timeText:setTextColor(1, 1, 1)
 
     local button_menu = display.newImageRect(sceneGroup, "ui/button_menu.png",
-                        355*0.60, 115*0.60)
-    button_menu.x = display.contentCenterX - 300
-    button_menu.y = 10
+                        screenHeight*3.08*0.05, screenHeight*0.05)
+    button_menu.x = screenCenterX*0.35
+    button_menu.y = menuCenterY
 
     button_menu:addEventListener( "tap", gotoMenu )
 
     -- Global Variable
     button_pause = display.newImageRect(sceneGroup, "ui/button_pause.png",
-                        355*0.60, 115*0.60)
-    button_pause.x = display.contentCenterX + 300
-    button_pause.y = 10
+                        screenHeight*3.08*0.05, screenHeight*0.05)
+    button_pause.x = screenCenterX*1.65
+    button_pause.y = menuCenterY
 
     -- ### Build the map grid.
 
@@ -162,12 +166,12 @@ function scene:create( event )
     -- We're going to start our map at the edge of our controller. The last
     -- pixel of our controller area is going to be the first pixel of our map
     -- grid.
-    grid.xStart = display.contentCenterX/15
+    grid.xStart = screenCenterX*0.1
 
     -- Just like we wanted to leave a bit of room along the right edge, we want
     -- to leave some room on top of the screen. I found this to be a good
     -- size but you can change it if you want.
-    grid.yStart = 150
+    grid.yStart = screenCenterY*0.30
 
     -- Lastly, we want to create a group for all the grid tiles and objects on
     -- our map so we can move them around all at once. This is going to help us
@@ -432,20 +436,21 @@ function scene:create( event )
 
     -- The center of our control pad will be at the halfway point of the control
     -- area width...
-    local controlCenterX = display.contentCenterX
+    local controlCenterX = screenCenterX
 
     -- Posição Y do controle na tela
-    local controlCenterY = screenHeight - screenHeight / 8
+    local controlCenterY = screenHeight*0.95 -- screenHeight / 18
     
     local controlCenterRadius = controllerWidth / 2 -- correctionMarginControl
 
+    local multiplierControl = 0.085
     -- The size of our control buttons. The up and down
-    local upDownWidth = 67
-    local upDownHeight = 150
+    local upDownWidth = screenWidth*multiplierControl
+    local upDownHeight = screenWidth*2.23*multiplierControl
 
     -- The size of the left and right control buttons.
-    local leftRightWidth = 150
-    local leftRightHeight = 67
+    local leftRightWidth = screenWidth*2.23*multiplierControl
+    local leftRightHeight = screenWidth*multiplierControl
 
     -- Container tables for the controls.
     local controls = {
@@ -739,6 +744,12 @@ function scene:destroy( event )
  
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
+    -- Stop the music!
+    audio.stop( 2 )
+    musicTrack = nil
+	-- Dispose audio!
+    audio.dispose( musicTrack )
+    musicTrack = nil
     print("Timer cancel")
     timer.cancel(timerIsOver)
  

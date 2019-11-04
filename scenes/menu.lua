@@ -35,18 +35,18 @@ function scene:create( event )
 
 	local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
-    
-    local background = display.newImageRect( sceneGroup, "ui/kitchen_bg.png", screenWidth*1.1, screenHeight*1.1 )
+
+    local background = display.newImageRect( sceneGroup, "ui/kitchen_bg.png", screenWidth*1.5, screenHeight*1.5 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY-55
 
-	local title = display.newImageRect( sceneGroup, "ui/logo2.png", 427*2, 135*2 )
+	local title = display.newImageRect( sceneGroup, "ui/logo2.png", screenHeight*3.16*0.2, screenHeight*0.2 )
 	title.x = display.contentCenterX
-	title.y = 200
+	title.y = screenHeight*0.1
 
-    local playButton = display.newImageRect( sceneGroup, "ui/button_play_new2.png", 596, 115 )
+    local playButton = display.newImageRect( sceneGroup, "ui/button_play_new2.png", screenHeight*5*0.1, screenHeight*0.1 )
     playButton.x = display.contentCenterX
-    playButton.y = 700
+    playButton.y = screenHeight*0.5
 	
 	musicTrack = audio.loadStream( "ui/audio/intro_Wolf_Kisses.mp3")
 

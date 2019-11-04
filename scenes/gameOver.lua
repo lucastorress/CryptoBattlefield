@@ -13,6 +13,9 @@ local scene = composer.newScene()
 local screenWidth = display.contentWidth
 local screenHeight = display.contentHeight
 
+local screenCenterX = display.contentCenterX
+local screenCenterY = display.contentCenterY
+
 local musicTrack
 
 local function gotoGame()
@@ -35,15 +38,17 @@ function scene:create( event )
 
 	local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
+	audio.stop( 2 )
 	musicTrack = audio.loadStream( "ui/audio/SynthOrgan_Game_Over.mp3")
+	audio.play( musicTrack, { channel=3, loops=0 } )
 
-    local background = display.newImageRect( sceneGroup, "ui/background_gameover.png", screenWidth, screenHeight )
-	background.x = display.contentCenterX
-	background.y = display.contentCenterY-50
+    local background = display.newImageRect( sceneGroup, "ui/background_gameover.png", screenWidth*1.1, screenHeight*1.1 )
+	background.x = screenCenterX
+	background.y = screenCenterY
 
-    local playAgainButton = display.newImageRect( sceneGroup, "ui/button_play_again_new.png", 595*0.75, 115*0.75 )
-    playAgainButton.x = display.contentCenterX
-    playAgainButton.y = display.contentCenterY+400
+    local playAgainButton = display.newImageRect( sceneGroup, "ui/button_play_again_new.png", screenHeight*5.17*0.1, screenHeight*0.1 )
+    playAgainButton.x = screenCenterX
+    playAgainButton.y = screenCenterY*1.75
 	
 
 	playAgainButton:addEventListener( "tap", gotoGame )
@@ -61,7 +66,7 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		audio.play( musicTrack, { channel=3, loops=0 } )
+
 	end
 end
 
