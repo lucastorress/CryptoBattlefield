@@ -41,7 +41,7 @@ local screenCenterY = display.contentCenterY
 local musicTrack
 
 -- Load background
-local gridBackground = display.newImageRect( "ui/background_maze.png", 1560, 1595 ) -- x: 260
+local gridBackground = display.newImageRect( "ui/background_maze.png", screenWidth*0.97*2.15, screenWidth*2.15 ) -- x: 260
 gridBackground.x = screenCenterX -- 150
 gridBackground.y = screenCenterY-50
 
